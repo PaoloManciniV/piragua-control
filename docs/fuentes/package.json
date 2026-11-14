@@ -1,0 +1,11 @@
+{
+  "name": "piragua-control-documento",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "documento": "node gen.js && cd out && soffice --headless --convert-to pdf Proyecto_Final_Piragua_Control.docx",
+    "capturas": "node capturas.mjs",
+    "diagrama": "node diagrama.mjs"
+  },
+  "dependencies": { "docx": "^9.5.0", "playwright": "^1.49.0" }
+}
