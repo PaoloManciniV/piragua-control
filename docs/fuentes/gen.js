@@ -16,7 +16,7 @@ const W = 9360;
 function runs(text, base = {}) {
   // **negrita**, __cursiva__, [[texto|ancla]], referencias a secciones y URL
   const out = [];
-  const parts = String(text).split(/(\*\*[^*]+\*\*|__[^_]+__|\[\[[^\]]+\]\]|secci(?:ón|ones) \d+(?:\.\d+)?(?: y \d+(?:\.\d+)?)?|https:\/\/piragua-control\.netlify\.app)/);
+  const parts = String(text).split(/(\*\*[^*]+\*\*|__[^_]+__|\[\[[^\]]+\]\]|secci(?:ón|ones) \d+(?:\.\d+)?(?: y \d+(?:\.\d+)?)?|https:\/\/(?:piragua-control\.netlify\.app|github\.com\/PaoloManciniV\/piragua-control|trello\.com\/b\/z9pio1m6))/);
   for (const p of parts) {
     if (!p) continue;
     if (p.startsWith('[[')) { const [t, a] = p.slice(2, -2).split('|'); out.push(new InternalHyperlink({ anchor: a, children: [new TextRun({ text: t, font: F, ...base, ...LINK })] })); continue; }
@@ -200,7 +200,7 @@ const TOC = [
   [0, '6. Historias de usuario desarrolladas: top 5'],
   [0, '7. Estimaciones'], [1, '7.1 Estimación en story points'], [1, '7.2 Conversión a tiempo'], [1, '7.3 Estimación de costo'], [1, '7.4 Cronograma de sprints'],
   [0, '8. Stack tecnológico'], [1, '8.1 Tecnología por capa'], [1, '8.2 Diagrama de arquitectura'],
-  [0, '9. Link del prototipo'], [1, '9.1 Enlace y cómo recorrerlo'], [1, '9.2 Flujos alternos visibles'], [1, '9.3 Revisión con el dueño de la tienda'], [1, '9.4 Capturas de los flujos principales'],
+  [0, '9. Link del prototipo'], [1, '9.1 Enlace y cómo recorrerlo'], [1, '9.2 Flujos alternos visibles'], [1, '9.3 Revisión con el dueño de la tienda'], [1, '9.4 Capturas de los flujos principales'], [1, '9.5 Enlaces de la entrega'],
 ];
 ch.push(new Paragraph({ children: [new TextRun({ text: 'Contenido', bold: true, font: F, size: 28 })], spacing: { after: 240 } }));
 TOC.forEach(([lvl, t]) => ch.push(new Paragraph({
@@ -548,7 +548,7 @@ ch.push(BR());
 ch.push(H1('9. Link del prototipo'));
 ch.push(H2('9.1 Enlace y cómo recorrerlo'));
 ch.push(new Paragraph({ children: [new ExternalHyperlink({ link: 'https://piragua-control.netlify.app', children: [new TextRun({ text: 'https://piragua-control.netlify.app', font: F, size: 28, bold: true, color: '0563C1', underline: {} })] })], alignment: AlignmentType.CENTER, spacing: { before: 120, after: 200 } }));
-ch.push(P('El prototipo es navegable e interactivo: los formularios validan, las ventas descuentan unidades, las bajas se reflejan en el cierre de caja y los datos se guardan en el navegador mientras se usa. Está pensado para el celular, pero también se puede abrir en el computador. El acceso es público y no pide usuario ni contraseña. Al pie de la pantalla de Inicio está el enlace "Restablecer datos iniciales" para volver a empezar.'));
+ch.push(P('El prototipo es navegable e interactivo: los formularios validan, las ventas descuentan unidades, las bajas se reflejan en el cierre de caja y los datos se guardan en el navegador mientras se usa. Está pensado para el celular y en el computador se adapta a una versión de escritorio con menú lateral. El acceso es público y no pide usuario ni contraseña. Al pie de la pantalla de Inicio está el enlace "Restablecer datos iniciales" para volver a empezar.'));
 ch.push(tabla(['HU', 'Cómo recorrer el flujo feliz', 'Figuras'], [
   ['HU-01', 'Inicio, "Entrada de mercancía", escribir "leche", cantidad y fecha, "Usar esa ubicación", "Guardar entrada".', '3 y 4'],
   ['HU-02', 'Barra inferior "¿Dónde está?", escribir "leche", tocar el resultado.', '6 y 7'],
@@ -608,6 +608,14 @@ capturas([
   ['22_mapa', 'HU-08: mapa de la tienda.'],
   ['23_faltantes', 'HU-06: productos por pedir.'],
 ]).forEach(t => ch.push(t));
+ch.push(H2('9.5 Enlaces de la entrega'));
+ch.push(tabla(['Recurso', 'Enlace'], [
+  ['Prototipo navegable (Netlify)', 'https://piragua-control.netlify.app'],
+  ['Repositorio de código (GitHub)', 'https://github.com/PaoloManciniV/piragua-control'],
+  ['Tablero Scrum (Trello)', 'https://trello.com/b/z9pio1m6'],
+], [3200, 6160], { size: 19 }));
+ch.push(cap('Enlaces del proyecto.'));
+ch.push(P('El tablero de Trello tiene el backlog con las 13 historias, sus criterios y su definición de terminado, la lista de propuestas de cambio, los impedimentos y las métricas de estimación y plan de sprints. El repositorio publica el prototipo en Netlify cada vez que se actualiza la rama main.'));
 
 // ---------- documento ----------
 const doc = new Document({

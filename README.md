@@ -7,6 +7,8 @@ Profesor: Rafael Pérez Meriño.
 
 **Prototipo publicado:** https://piragua-control.netlify.app
 
+**Tablero Scrum (Trello):** https://trello.com/b/z9pio1m6
+
 ## Problema
 
 Alfredo Ortega, dueño de La Piragua, pierde entre 150.000 y 300.000 pesos al mes en productos vencidos o dañados y no sabe cuánto gana, porque no tiene un registro que le diga qué mercancía tiene, dónde está guardada y cuándo se vence.
@@ -30,7 +32,7 @@ Los datos se guardan en el navegador (localStorage). Al pie de Inicio está **Re
 ## Cómo correrlo
 
 No necesita servidor ni instalación. Basta con abrir `index.html` en el navegador.
-Para verlo como en el celular: F12 en Chrome y activar la vista de dispositivo móvil.
+En el celular se ve como app; en el computador se adapta a una versión de escritorio con menú lateral.
 
 ## Publicar en Netlify
 
