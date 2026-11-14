@@ -6,10 +6,10 @@ const {
   Bookmark, InternalHyperlink, ExternalHyperlink
 } = require('docx');
 const bid = t => { const m = t.match(/^(HU-\d+)/); if (m) return m[1].replace('-', '').toLowerCase(); return 's' + t.split(' ')[0].replace(/\.$/, '').replace(/\./g, '_'); };
-const LINK = { color: '0563C1', underline: {} };
+const LINK = { color: '000000', underline: {} };
 
 const PAGES = fs.existsSync('pages.json') ? JSON.parse(fs.readFileSync('pages.json')) : {};
-const F = 'Arial';
+const F = 'Times New Roman';
 const W = 9360;
 
 // ---------- helpers ----------
@@ -44,7 +44,7 @@ const P = (t, o = {}) => new Paragraph({
 });
 const H1 = t => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new Bookmark({ id: bid(t), children: [new TextRun({ text: t, bold: true, font: F, size: 28, color: '000000' })] })], spacing: { before: 0, after: 200 }, keepNext: true });
 const H2 = t => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new Bookmark({ id: bid(t), children: [new TextRun({ text: t, bold: true, font: F, size: 24, color: '000000' })] })], spacing: { before: 240, after: 120 }, keepNext: true });
-const H3 = t => new Paragraph({ children: [new TextRun({ text: t, bold: true, font: F, size: 22, color: '0F5C6E' })], spacing: { before: 180, after: 100 }, keepNext: true });
+const H3 = t => new Paragraph({ children: [new TextRun({ text: t, bold: true, font: F, size: 22, color: '000000' })], spacing: { before: 180, after: 100 }, keepNext: true });
 const BR = () => new Paragraph({ children: [new PageBreak()] });
 const bullet = (t, lvl = 0) => new Paragraph({ children: runs(t, { size: 22 }), numbering: { reference: 'vin', level: lvl }, spacing: { after: 80, line: 276 }, alignment: AlignmentType.JUSTIFIED });
 const num = (t, ref) => new Paragraph({ children: runs(t, { size: 22 }), numbering: { reference: ref, level: 0 }, spacing: { after: 80, line: 276 }, alignment: AlignmentType.JUSTIFIED });
@@ -59,7 +59,7 @@ function cell(t, w, o = {}) {
   const paras = Array.isArray(t) ? t : String(t).split('\n');
   return new TableCell({
     borders, width: { size: w, type: WidthType.DXA },
-    shading: o.head ? { fill: 'D9E4E8', type: ShadingType.CLEAR, color: 'auto' } : (o.fill ? { fill: o.fill, type: ShadingType.CLEAR, color: 'auto' } : undefined),
+    shading: o.head ? { fill: 'D9D9D9', type: ShadingType.CLEAR, color: 'auto' } : undefined,
     margins: { top: 60, bottom: 60, left: 100, right: 100 },
     verticalAlign: VerticalAlign.CENTER,
     children: paras.map(x => x instanceof Paragraph ? x : new Paragraph({
@@ -196,11 +196,11 @@ const TOC = [
   [0, '2. Planteamiento del problema'], [1, '2.1 Situación actual'], [1, '2.2 Problema específico'], [1, '2.3 Por qué es importante resolverlo'], [1, '2.4 Quién tiene el problema'], [1, '2.5 Solución propuesta'],
   [0, '3. Objetivos'], [1, '3.1 Objetivo general'], [1, '3.2 Objetivos específicos'],
   [0, '4. Información del proyecto e investigación'], [1, '4.1 Perfil de la persona entrevistada'], [1, '4.2 Resumen de entrevistas'], [1, '4.3 Hallazgos clave y citas'], [1, '4.4 Resultados del cuestionario'], [1, '4.5 Problem statement'],
-  [0, '5. Backlog del producto'], [1, '5.1 Backlog priorizado'], [1, '5.2 Proceso con IA: qué propuso la IA y qué ajustó el equipo'], [1, '5.3 Fuera del alcance'],
+  [0, '5. Backlog del producto'], [1, '5.1 Backlog priorizado'], [1, '5.2 Proceso con IA: qué propuso la IA y qué ajustó el equipo'], [1, '5.3 Fuera del alcance'], [1, '5.4 Tablero Scrum en Trello'],
   [0, '6. Historias de usuario desarrolladas: top 5'],
   [0, '7. Estimaciones'], [1, '7.1 Estimación en story points'], [1, '7.2 Conversión a tiempo'], [1, '7.3 Estimación de costo'], [1, '7.4 Cronograma de sprints'],
-  [0, '8. Stack tecnológico'], [1, '8.1 Tecnología por capa'], [1, '8.2 Diagrama de arquitectura'],
-  [0, '9. Link del prototipo'], [1, '9.1 Enlace y cómo recorrerlo'], [1, '9.2 Flujos alternos visibles'], [1, '9.3 Revisión con el dueño de la tienda'], [1, '9.4 Capturas de los flujos principales'], [1, '9.5 Enlaces de la entrega'],
+  [0, '8. Stack tecnológico'], [1, '8.1 Tecnología por capa'], [1, '8.2 Diagrama de arquitectura'], [1, '8.3 Control de versiones y despliegue'],
+  [0, '9. Link del prototipo'], [1, '9.1 Enlace y cómo recorrerlo'], [1, '9.2 Versión para computador'], [1, '9.3 Flujos alternos visibles'], [1, '9.4 Revisión con el dueño de la tienda'], [1, '9.5 Capturas de los flujos principales'], [1, '9.6 Enlaces de la entrega'],
 ];
 ch.push(new Paragraph({ children: [new TextRun({ text: 'Contenido', bold: true, font: F, size: 28 })], spacing: { after: 240 } }));
 TOC.forEach(([lvl, t]) => ch.push(new Paragraph({
@@ -267,7 +267,7 @@ ch.push(P('Aplicamos el kit de elicitación diseñado en el Taller 1, ya ajustad
 ch.push(tabla(['#', 'Fecha', 'Medio', 'Duración', 'Técnica y alcance', 'Participantes'], [
   ['1', '7 nov 2026', 'Presencial, en la tienda', '45 min', 'Preguntas filtro, entrevista semiestructurada con el guion en embudo (11 preguntas en 5 etapas) y cuestionario de 10 ítems.', 'Alfredo Ortega. Entrevistador: Juan Esteban Quintero. Notas: Paolo Mancini.'],
   ['2', '7 nov 2026', 'Presencial, en la tienda', '20 min', 'Observación directa del mostrador, la nevera y la bodega, y de cómo se registra una entrada de mercancía.', 'Dylan Mariño y Milan Mejía.'],
-  ['3', '15 nov 2026', 'Presencial, en la tienda, con el celular del dueño', '30 min', 'Revisión del prototipo navegable: recorrido de los 5 flujos y de los mensajes de error (detalle en la sección 9.3).', 'Alfredo Ortega. Andrés Parra (PO) y Juan Pablo Mora.'],
+  ['3', '15 nov 2026', 'Presencial, en la tienda, con el celular del dueño', '30 min', 'Revisión del prototipo navegable: recorrido de los 5 flujos y de los mensajes de error (detalle en la sección 9.4).', 'Alfredo Ortega. Andrés Parra (PO) y Juan Pablo Mora.'],
 ], [400, 1050, 1350, 1000, 3160, 2400], { center: [0, 3] }));
 ch.push(cap('Registro de las sesiones con el dueño de La Piragua.'));
 ch.push(H2('4.3 Hallazgos clave y citas'));
@@ -328,7 +328,31 @@ ch.push(tabla(['Lo que propuso la IA', 'Lo que decidió el equipo', 'Por qué'],
 ch.push(cap('Bitácora del Taller 3: propuesta de la IA frente a la decisión del equipo.'));
 ch.push(H2('5.3 Fuera del alcance'));
 ch.push(P('Quedan por fuera de esta versión la facturación electrónica ante la DIAN, el pago con Nequi o Daviplata integrado, el lector de código de barras y el manejo de varias tiendas. Se podrán revisar con el dueño cuando el producto esté en uso.'));
+ch.push(H2('5.4 Tablero Scrum en Trello'));
+ch.push(P('El backlog se gestiona en Trello, en el tablero público https://trello.com/b/z9pio1m6, con la misma organización que usamos en EcoAcción. El tablero tiene cuatro listas:'));
+[
+  '**Piragua Control:** las 13 historias de usuario. Cada tarjeta tiene la narrativa, la prioridad, los story points (con la propuesta de la IA), el sprint, los criterios DADO, CUANDO, ENTONCES y un checklist de definición de terminado (DoD). Las historias que ya están en el prototipo llevan como portada su captura y la etiqueta "En el prototipo".',
+  '**Propuesta de cambios:** los cambios que se aceptaron durante el proyecto, con su origen, la decisión y el estado.',
+  '**Impedimentos:** lo que frenó el trabajo, con su causa, quién lo reportó, cómo se resolvió y su estado.',
+  '**Métricas:** la estimación de la IA frente al equipo, la capacidad, el plan de sprints con su gráfica y los enlaces de la entrega.',
+].forEach(t => ch.push(bullet(t)));
+ch.push(P('Las etiquetas indican la prioridad (alta, media, baja), el sprint (1, 2 o 3), los cambios y lo que ya está construido en el prototipo. En el checklist DoD solo están marcados los ítems que el prototipo ya cumple; el ítem de revisión con el dueño se marca después de mostrarle la app.', { before: 100 }));
+figura('img/trello_tablero.png', 600, 347, 'Tablero de Trello con el backlog, propuestas de cambio, impedimentos y métricas.').forEach(x => ch.push(x));
+figura('img/trello_tarjeta.png', 560, 336, 'Tarjeta de HU-01 con etiquetas, narrativa y criterios de aceptación.').forEach(x => ch.push(x));
+ch.push(H3('Propuestas de cambio'));
+ch.push(tabla(['Cambio', 'Origen', 'Decisión y estado'], [
+  ['Cambio 01: ubicación obligatoria al registrar mercancía', 'HU-01. El borrador de la IA no tenía nada sobre dónde se guarda la mercancía. En la observación directa (7 nov) vimos los productos sin lugar fijo ni orden por vencimiento.', 'Aceptado por el Product Owner (Andrés Parra). La ubicación es obligatoria, se agregaron HU-02 y HU-08 y la app sugiere el sitio donde ya está el producto. Implementado.'],
+  ['Cambio 02: versión de escritorio del prototipo', 'Todas las pantallas. En un computador el prototipo se veía como una columna angosta. Propuesto por Paolo Mancini el 14 nov.', 'Aceptado porque no cambia el alcance de las historias. Menú lateral y vistas en columnas en PC. Implementado y publicado.'],
+], [2600, 3460, 3300], { size: 18 }));
+ch.push(cap('Propuestas de cambio registradas en Trello.'));
+ch.push(H3('Impedimentos'));
+ch.push(tabla(['Impedimento', 'Causa', 'Cómo se resolvió', 'Estado'], [
+  ['El link del prototipo daba "Site not found" en Netlify', 'El documento ya tenía el enlace, pero el sitio todavía no existía en Netlify.', 'Se creó el repositorio en GitHub y se importó en Netlify con el nombre piragua-control y despliegue automático.', 'Resuelto'],
+  ['Netlify no podía leer el repositorio de GitHub', 'La cuenta de GitHub no había autorizado la aplicación de Netlify.', 'Paolo Mancini autorizó la aplicación y el repositorio quedó disponible para desplegar.', 'Resuelto'],
+], [2300, 2600, 3360, 1100], { size: 18, center: [3] }));
+ch.push(cap('Impedimentos registrados en Trello. Reportados por Paolo Mancini el 14 de noviembre de 2026.'));
 ch.push(BR());
+
 
 // 6. TOP 5
 ch.push(H1('6. Historias de usuario desarrolladas: top 5'));
@@ -480,7 +504,8 @@ ch.push(P('Primero le pedimos a la IA una estimación de referencia para cada hi
 ch.push(tabla(['HU', 'IA', 'Justificación de la IA', 'Equipo', 'Razón de la diferencia'],
   EST.map(r => [r[0], String(r[1]), r[2], String(r[3]), r[4]]).concat([['**Total**', `**${totalIA}**`, '', `**${totalSP}**`, '']]),
   [800, 600, 2700, 900, 4360], { center: [0, 1, 3], size: 17, fills: (r, i) => (i === 3 && r[1] !== r[3] && r[0].startsWith('HU')) ? 'FFF4D1' : undefined }));
-ch.push(cap('Estimación de la IA frente a la estimación del equipo en planning poker. En amarillo, las historias donde hubo diferencia.'));
+ch.push(cap('Estimación de la IA frente a la estimación del equipo en planning poker.'));
+figura('img/estimacion_ia_equipo.png', 600, 252, 'Story points por historia: propuesta de la IA frente a la estimación final del equipo.').forEach(x => ch.push(x));
 ch.push(P(`Hubo diferencia en 8 de las 13 historias. La IA tendió a subestimar lo que depende de la realidad de la tienda (lotes, ubicaciones, vencidos, trabajo sin internet) y a sobrestimar lo que imaginó más grande de lo que el dueño necesita (un editor de planos, un reporte contable, una integración con WhatsApp). En total la IA sumó ${totalIA} SP y el equipo ${totalSP} SP.`));
 ch.push(H2('7.2 Conversión a tiempo'));
 ch.push(tabla(['Dato', 'Valor'], [
@@ -523,6 +548,7 @@ ch.push(tabla(['Sprint', 'Fechas', 'Historias', 'SP', 'Qué se entrega al final'
   ['**Total**', '6 semanas de trabajo', '13 historias', `**${totalSP}**`, ''],
 ], [1000, 1500, 2100, 600, 4160], { center: [0, 3], size: 18 }));
 ch.push(cap('Distribución de las historias en sprints de dos semanas.'));
+figura('img/plan_sprints.png', 600, 252, 'Burnup planeado: story points acumulados por sprint frente al alcance y la capacidad del equipo.').forEach(x => ch.push(x));
 ch.push(P('Entre el Sprint 2 y el Sprint 3 hay una pausa por las festividades de fin de año, que en la tienda son temporada alta y el dueño no tiene tiempo para revisiones. Si el Sprint 3 se aprieta, HU-12 (prioridad baja) pasa a un sprint corto de cierre sin afectar lo demás.'));
 ch.push(BR());
 
@@ -542,35 +568,68 @@ ch.push(H2('8.2 Diagrama de arquitectura'));
 ch.push(P('El primer borrador lo generó la IA. El equipo lo ajustó para que se viera que la app funciona en el celular sin conexión y que la nube solo se usa para respaldo y sincronización. También se agregaron los dos actores y las reglas que corren en el celular.'));
 figura('img/arquitectura.png', 600, 330, 'Arquitectura de Piragua Control: la PWA y sus datos viven en el celular y se sincronizan con Supabase cuando hay internet.').forEach(x => ch.push(x));
 ch.push(P('El flujo es sencillo: el celular descarga la app desde Netlify una sola vez y la guarda con el service worker. Desde ahí, cada entrada, venta o cierre se guarda en IndexedDB y queda en una cola de cambios. Cuando hay internet, la cola se envía a Supabase por HTTPS, que valida el rol (dueño o ayudante) y guarda en PostgreSQL.'));
+ch.push(H2('8.3 Control de versiones y despliegue'));
+ch.push(P('El código está en el repositorio público https://github.com/PaoloManciniV/piragua-control. Netlify está conectado a ese repositorio: cada vez que entra un cambio a la rama main, el prototipo se vuelve a publicar solo en https://piragua-control.netlify.app, sin subir archivos a mano.'));
+ch.push(tabla(['Commit', 'Fecha', 'Descripción'], [
+  ['9aeb6bd', '14/11/2026', 'Prototipo navegable Piragua Control (HU-01 a HU-08)'],
+  ['3e15e19', '14/11/2026', 'README con descripción, flujos y despliegue'],
+  ['c0b1ab1', '14/11/2026', 'Fuentes del documento: generador, capturas y diagrama'],
+  ['8a4e689', '14/11/2026', 'Documento de entrega del proyecto final (PDF y Word)'],
+  ['483b778', '14/11/2026', 'Versión de escritorio: menú lateral y vistas en columnas para PC'],
+  ['844fc53', '14/11/2026', 'Gráficas de estimación y plan de sprints'],
+  ['2e08121', '14/11/2026', 'Documento con enlaces de la entrega (prototipo, repositorio y Trello)']
+], [1300, 1500, 6560], { size: 18, center: [0, 1] }));
+ch.push(cap('Historial de commits del repositorio (autor: Paolo Mancini).'));
+ch.push(H3('Estructura del repositorio'));
+ch.push(tabla(['Archivo o carpeta', 'Contenido'], [
+  ['index.html', 'El prototipo completo: pantallas, estilos y lógica en JavaScript.'],
+  ['manifest.json y sw.js', 'Manifiesto de la PWA y service worker para abrir la app sin internet.'],
+  ['netlify.toml', 'Configuración de publicación en Netlify.'],
+  ['README.md', 'Descripción del proyecto, flujos, cómo ejecutarlo y equipo.'],
+  ['docs/', 'Este documento en PDF y en Word.'],
+  ['docs/fuentes/', 'Scripts que generan el documento, las capturas, el diagrama y las gráficas.'],
+], [2800, 6560], { size: 18 }));
+ch.push(cap('Estructura del repositorio.'));
+ch.push(H3('Instrucciones para ejecutarlo'));
+lista([
+  'Abrir https://piragua-control.netlify.app en el celular o en el computador. No pide usuario ni contraseña.',
+  'En el celular se puede instalar como app desde el menú del navegador ("Agregar a la pantalla de inicio") y abre aunque no haya internet.',
+  'Para correrlo en local basta con descargar el repositorio y abrir index.html en el navegador. No necesita servidor ni instalar nada.',
+  'Para volver a los datos de inicio se usa el enlace "Restablecer datos iniciales" al pie de la pantalla de Inicio.',
+]).forEach(p => ch.push(p));
 ch.push(BR());
+
 
 // 9. PROTOTIPO
 ch.push(H1('9. Link del prototipo'));
 ch.push(H2('9.1 Enlace y cómo recorrerlo'));
-ch.push(new Paragraph({ children: [new ExternalHyperlink({ link: 'https://piragua-control.netlify.app', children: [new TextRun({ text: 'https://piragua-control.netlify.app', font: F, size: 28, bold: true, color: '0563C1', underline: {} })] })], alignment: AlignmentType.CENTER, spacing: { before: 120, after: 200 } }));
+ch.push(new Paragraph({ children: [new ExternalHyperlink({ link: 'https://piragua-control.netlify.app', children: [new TextRun({ text: 'https://piragua-control.netlify.app', font: F, size: 28, bold: true, color: '000000', underline: {} })] })], alignment: AlignmentType.CENTER, spacing: { before: 120, after: 200 } }));
 ch.push(P('El prototipo es navegable e interactivo: los formularios validan, las ventas descuentan unidades, las bajas se reflejan en el cierre de caja y los datos se guardan en el navegador mientras se usa. Está pensado para el celular y en el computador se adapta a una versión de escritorio con menú lateral. El acceso es público y no pide usuario ni contraseña. Al pie de la pantalla de Inicio está el enlace "Restablecer datos iniciales" para volver a empezar.'));
 ch.push(tabla(['HU', 'Cómo recorrer el flujo feliz', 'Figuras'], [
-  ['HU-01', 'Inicio, "Entrada de mercancía", escribir "leche", cantidad y fecha, "Usar esa ubicación", "Guardar entrada".', '3 y 4'],
-  ['HU-02', 'Barra inferior "¿Dónde está?", escribir "leche", tocar el resultado.', '6 y 7'],
-  ['HU-03', 'Tarjeta roja de Inicio o "Vencen", "Dar de baja", "Sí, dar de baja".', '10 y 11'],
-  ['HU-04', '"Vender", agregar arroz y queso, "Cobrar", elegir con cuánto paga, "Confirmar venta".', '14, 16 y 17'],
-  ['HU-05', '"Caja", escribir el efectivo contado, "Cerrar caja".', '18 y 21'],
+  ['HU-01', 'Inicio, "Entrada de mercancía", escribir "leche", cantidad y fecha, "Usar esa ubicación", "Guardar entrada".', '8 y 9'],
+  ['HU-02', 'Barra inferior "¿Dónde está?", escribir "leche", tocar el resultado.', '11 y 12'],
+  ['HU-03', 'Tarjeta roja de Inicio o "Vencen", "Dar de baja", "Sí, dar de baja".', '15 y 16'],
+  ['HU-04', '"Vender", agregar arroz y queso, "Cobrar", elegir con cuánto paga, "Confirmar venta".', '19, 21 y 22'],
+  ['HU-05', '"Caja", escribir el efectivo contado, "Cerrar caja".', '23 y 26'],
 ].map(r => [`[[${r[0]}|${r[0].replace('-', '').toLowerCase()}]]`, r[1], r[2]]), [900, 6460, 2000], { center: [0, 2], size: 18 }));
 ch.push(cap('Recorrido de los cinco flujos felices en el prototipo.'));
-ch.push(H2('9.2 Flujos alternos visibles'));
+ch.push(H2('9.2 Versión para computador'));
+ch.push(P('Además de la vista de celular, el prototipo se adapta cuando se abre en un computador: muestra un menú lateral con todas las secciones (también Entrada de mercancía, Mapa de la tienda y Por pedir), las tarjetas del inicio en varias columnas, la venta con el carrito a la derecha y el cierre de caja en dos columnas. Así el docente y el dueño lo pueden revisar cómodamente desde un PC. Este ajuste quedó registrado como Cambio 02 en el tablero de Trello (sección 5.4).'));
+figura('img/app_escritorio.png', 600, 375, 'Prototipo abierto en un computador: menú lateral y tarjetas en columnas.').forEach(x => ch.push(x));
+ch.push(H2('9.3 Flujos alternos visibles'));
 ch.push(P('La guía pide mínimo dos flujos alternos en el prototipo. Construimos todos los que están marcados con (P) en la sección 6. Estos son los más fáciles de probar:'));
 ch.push(tabla(['HU', 'Cómo provocarlo', 'Qué se ve', 'Figura'], [
-  ['HU-01', 'En Entrada de mercancía poner cantidad 0, una fecha pasada y no elegir zona.', 'Tres mensajes en rojo y la entrada no se guarda.', '5'],
-  ['HU-02', 'Buscar "mortadela" y luego "harina".', 'No encontrado con botón a Entrada, y "Agotado".', '8 y 9'],
-  ['HU-04', 'Vender "kumis".', 'Ventana "No se puede vender" porque las unidades están vencidas.', '12'],
-  ['HU-04', 'Agregar cinco veces "Queso costeño 500 g".', 'Aviso "Solo quedan 4 unidades".', '13'],
-  ['HU-04', 'En Cobrar escribir menos plata que el total.', '"El dinero recibido es menor que el total. Faltan ..."', '15'],
-  ['HU-05', 'Tocar "Cerrar caja" sin escribir el efectivo.', '"Escriba el efectivo que contó en la caja."', '19'],
-  ['HU-05', 'Escribir un efectivo distinto al esperado.', 'Ventana con la diferencia y nota obligatoria.', '20'],
-  ['HU-04 y HU-05', 'Después de cerrar la caja, intentar cobrar una venta.', '"La caja de hoy ya está cerrada."', '22'],
+  ['HU-01', 'En Entrada de mercancía poner cantidad 0, una fecha pasada y no elegir zona.', 'Tres mensajes en rojo y la entrada no se guarda.', '10'],
+  ['HU-02', 'Buscar "mortadela" y luego "harina".', 'No encontrado con botón a Entrada, y "Agotado".', '13 y 14'],
+  ['HU-04', 'Vender "kumis".', 'Ventana "No se puede vender" porque las unidades están vencidas.', '17'],
+  ['HU-04', 'Agregar cinco veces "Queso costeño 500 g".', 'Aviso "Solo quedan 4 unidades".', '18'],
+  ['HU-04', 'En Cobrar escribir menos plata que el total.', '"El dinero recibido es menor que el total. Faltan ..."', '20'],
+  ['HU-05', 'Tocar "Cerrar caja" sin escribir el efectivo.', '"Escriba el efectivo que contó en la caja."', '24'],
+  ['HU-05', 'Escribir un efectivo distinto al esperado.', 'Ventana con la diferencia y nota obligatoria.', '25'],
+  ['HU-04 y HU-05', 'Después de cerrar la caja, intentar cobrar una venta.', '"La caja de hoy ya está cerrada."', '27'],
 ], [1200, 3460, 3700, 1000], { center: [0, 3], size: 18 }));
 ch.push(cap('Flujos alternos que se pueden probar en el prototipo.'));
-ch.push(H2('9.3 Revisión con el dueño de la tienda'));
+ch.push(H2('9.4 Revisión con el dueño de la tienda'));
 ch.push(P('El 15 de noviembre le mostramos el prototipo a don Alfredo en su propio celular, en la tienda. Recorrió con nosotros los cinco flujos y provocamos los mensajes de error para ver si los entendía sin ayuda. Lo que revisamos y lo que se ajustó:'));
 ch.push(tabla(['Qué revisamos', 'Resultado y ajuste'], [
   ['Si entiende la pantalla de Inicio sin explicación.', 'Llegó solo a "Vender" y a "Vencimientos". Las tarjetas de colores se mantienen.'],
@@ -580,9 +639,8 @@ ch.push(tabla(['Qué revisamos', 'Resultado y ajuste'], [
   ['Cierre de caja.', 'Se dejó la nota obligatoria cuando hay diferencia, porque a veces le fía a clientes conocidos y quiere dejarlo anotado.'],
 ], [3800, 5560], { size: 18 }));
 ch.push(cap('Revisión del prototipo con el dueño de La Piragua.'));
-ch.push(H2('9.4 Capturas de los flujos principales'));
+ch.push(H2('9.5 Capturas de los flujos principales'));
 ch.push(P('Respaldo visual de los flujos felices y alternos, tomado del prototipo publicado.'));
-nFig = 1; // las figuras de capturas empiezan en 2 (la 1 es el diagrama)
 capturas([
   ['01_inicio', 'Inicio con alertas del día.'],
   ['02_entrada_form', 'HU-01: entrada con ubicación sugerida.'],
@@ -608,7 +666,7 @@ capturas([
   ['22_mapa', 'HU-08: mapa de la tienda.'],
   ['23_faltantes', 'HU-06: productos por pedir.'],
 ]).forEach(t => ch.push(t));
-ch.push(H2('9.5 Enlaces de la entrega'));
+ch.push(H2('9.6 Enlaces de la entrega'));
 ch.push(tabla(['Recurso', 'Enlace'], [
   ['Prototipo navegable (Netlify)', 'https://piragua-control.netlify.app'],
   ['Repositorio de código (GitHub)', 'https://github.com/PaoloManciniV/piragua-control'],
@@ -620,7 +678,7 @@ ch.push(P('El tablero de Trello tiene el backlog con las 13 historias, sus crite
 // ---------- documento ----------
 const doc = new Document({
   creator: 'Equipo Piragua Control', title: 'Piragua Control - Proyecto final',
-  styles: { default: { document: { run: { font: F, size: 22 } } } },
+  styles: { default: { document: { run: { font: F, size: 22, color: '000000' } } } },
   numbering: {
     config: [
       { reference: 'vin', levels: [{ level: 0, format: 'bullet', text: '•', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 270 } } } }] },
