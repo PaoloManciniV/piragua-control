@@ -1,0 +1,5 @@
+node_modules/
+docs/fuentes/out/*.docx
+docs/fuentes/out/*.pdf
+.DS_Store
+Thumbs.db

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f5c6e">
+<title>Piragua Control · Tienda La Piragua</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --azul:#0f5c6e; --azul2:#0b4654; --azul-claro:#e3f1f4;
+  --naranja:#f28c28; --naranja-claro:#fff1e2;
+  --rojo:#c8372d; --rojo-claro:#fde9e7;
+  --amarillo:#b7860b; --amarillo-claro:#fff7da;
+  --verde:#1f8a4c; --verde-claro:#e4f5ea;
+  --texto:#1d2a30; --gris:#5f6f76; --borde:#d8e1e4; --fondo:#f3f6f7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#cfdde1;color:var(--texto);font-size:16px}
+.app{max-width:430px;margin:0 auto;min-height:100%;background:var(--fondo);position:relative;display:flex;flex-direction:column;box-shadow:0 0 30px rgba(0,0,0,.12)}
+header.top{background:var(--azul);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header.top .back{background:none;border:none;color:#fff;font-size:26px;line-height:1;cursor:pointer;padding:0 6px 0 0}
+header.top h1{font-size:19px;font-weight:600;flex:1}
+header.top .sub{font-size:12px;opacity:.85;font-weight:400;display:block}
+.logo{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center;flex:none}
+main{flex:1;padding:16px 16px 96px}
+nav.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--borde);display:flex;z-index:6}
+nav.bottom a{flex:1;text-align:center;padding:8px 2px 10px;color:var(--gris);text-decoration:none;font-size:11.5px;font-weight:600}
+nav.bottom a .ic{display:block;font-size:21px;margin-bottom:2px}
+nav.bottom a.on{color:var(--azul)}
+h2{font-size:17px;margin:18px 0 10px}
+h2:first-child{margin-top:0}
+.card{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.kpi{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:12px;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.kpi .n{font-size:24px;font-weight:700;margin-top:4px}
+.kpi .l{font-size:13px;color:var(--gris)}
+.kpi.rojo{border-color:#f1b9b3;background:var(--rojo-claro)} .kpi.rojo .n{color:var(--rojo)}
+.kpi.naranja{border-color:#f7cf9f;background:var(--naranja-claro)} .kpi.naranja .n{color:#c0640a}
+.kpi.verde .n{color:var(--verde)}
+.acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.accion{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:16px 12px;text-align:left;text-decoration:none;color:var(--texto);font-weight:600;font-size:15px;display:flex;flex-direction:column;gap:6px;min-height:92px}
+.accion .ic{font-size:26px}
+.accion small{font-weight:400;color:var(--gris);font-size:12.5px}
+.accion.prin{background:var(--azul);color:#fff;border-color:var(--azul)} .accion.prin small{color:#d4ecf1}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+label:first-child{margin-top:0}
+input,select{width:100%;font-size:17px;padding:12px;border:1.5px solid var(--borde);border-radius:10px;background:#fff;color:var(--texto);font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--azul)}
+.fila{display:flex;gap:10px}.fila>*{flex:1}
+.check{display:flex;align-items:center;gap:8px;font-weight:400;margin-top:8px;font-size:14px}
+.check input{width:20px;height:20px}
+.btn{display:block;width:100%;border:none;border-radius:12px;padding:15px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none}
+.btn.prin{background:var(--azul);color:#fff}
+.btn.sec{background:#fff;color:var(--azul);border:1.5px solid var(--azul)}
+.btn.peligro{background:var(--rojo);color:#fff}
+.btn.peq{padding:9px 12px;font-size:14px;width:auto;display:inline-block;border-radius:9px}
+.mt{margin-top:16px}.mt8{margin-top:8px}
+.err{background:var(--rojo-claro);color:var(--rojo);border:1px solid #f1b9b3;border-radius:10px;padding:10px 12px;font-size:14.5px;margin-top:8px;display:flex;gap:8px;align-items:flex-start}
+.aviso{background:var(--amarillo-claro);color:#7a5a04;border:1px solid #f0dc94;border-radius:10px;padding:10px 12px;font-size:14.5px;margin-top:8px}
+.ok{background:var(--verde-claro);color:#15603a;border:1px solid #b5e0c4;border-radius:10px;padding:10px 12px;font-size:14.5px;margin-top:8px}
+.info{background:var(--azul-claro);color:var(--azul2);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:8px}
+.campo-err input,.campo-err select{border-color:var(--rojo);background:#fffafa}
+.item{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:12px;margin-bottom:10px}
+.item .t{font-weight:700;font-size:16px}
+.item .d{color:var(--gris);font-size:13.5px;margin-top:3px}
+.item.clic{cursor:pointer}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;padding:4px 9px;border-radius:20px;background:var(--azul-claro);color:var(--azul2);margin:6px 6px 0 0}
+.chip.rojo{background:var(--rojo-claro);color:var(--rojo)}
+.chip.naranja{background:var(--naranja-claro);color:#b2580a}
+.chip.amarillo{background:var(--amarillo-claro);color:#7a5a04}
+.chip.verde{background:var(--verde-claro);color:var(--verde)}
+.sec-t{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.sec-t .dot{width:10px;height:10px;border-radius:50%}
+.vacio{text-align:center;color:var(--gris);padding:26px 12px;background:#fff;border:1px dashed var(--borde);border-radius:14px}
+.vacio .ic{font-size:36px;display:block;margin-bottom:6px}
+.lin{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #eef2f3;font-size:15px}
+.lin:last-child{border-bottom:none}
+.lin.total{font-weight:800;font-size:18px}
+.lin .neg{color:var(--rojo);white-space:nowrap} .lin .pos{color:var(--verde)}
+.cart-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eef2f3}
+.cart-item .nm{flex:1;font-size:15px;font-weight:600}
+.cart-item .nm small{display:block;font-weight:400;color:var(--gris)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--borde);background:#fff;font-size:20px;cursor:pointer}
+.qty span{min-width:22px;text-align:center;font-weight:700}
+.total-bar{position:sticky;bottom:70px;background:var(--azul2);color:#fff;border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.total-bar b{font-size:22px}
+.total-bar button{background:var(--naranja);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:16px;font-weight:800;cursor:pointer}
+.resultados .item{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.add{background:var(--azul);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:15px;font-weight:700;cursor:pointer;flex:none}
+.modal-fondo{position:fixed;inset:0;background:rgba(10,30,36,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.modal{background:#fff;width:100%;max-width:430px;border-radius:20px 20px 0 0;padding:20px 18px 26px;max-height:92vh;overflow:auto}
+.modal h3{font-size:19px;margin-bottom:6px}
+.modal p{color:var(--gris);font-size:15px;margin-bottom:6px}
+.modal .botones{display:flex;gap:10px;margin-top:18px}.modal .botones>*{flex:1}
+.exito{text-align:center;padding:24px 8px}
+.exito .circ{width:78px;height:78px;border-radius:50%;background:var(--verde-claro);color:var(--verde);font-size:42px;display:grid;place-items:center;margin:6px auto 14px}
+.exito h2{font-size:21px;margin:0 0 8px}
+.exito p{color:var(--gris);margin-bottom:6px}
+.mapa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.zona{background:#fff;border:1.5px solid var(--borde);border-radius:12px;padding:10px}
+.zona h4{font-size:14px;margin-bottom:6px}
+.estante{border:1px solid var(--borde);border-radius:8px;padding:6px 8px;margin-top:6px;font-size:13px;display:flex;justify-content:space-between;background:#fafcfc;cursor:pointer}
+.estante.on{background:var(--naranja);color:#fff;border-color:var(--naranja);font-weight:700}
+.zona.on{border-color:var(--naranja)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;background:#1d2a30;color:#fff;padding:12px 16px;border-radius:12px;font-size:14.5px;z-index:30;max-width:400px;width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.mini{font-size:12.5px;color:var(--gris)}
+.pie{font-size:12px;color:var(--gris);text-align:center;margin-top:22px}
+.pie button{background:none;border:none;color:var(--azul);text-decoration:underline;font-size:12px;cursor:pointer}
+.seg{display:flex;background:#e5ecee;border-radius:10px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:none;background:none;padding:9px;font-weight:700;border-radius:8px;font-size:14px;color:var(--gris);cursor:pointer}
+.seg button.on{background:#fff;color:var(--azul)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top" id="top"></header>
+  <main id="main"></main>
+  <nav class="bottom" id="nav"></nav>
+</div>
+<div id="capa"></div>
+
+<script>
+/* ============ Piragua Control · prototipo navegable ============
+   Datos guardados en el navegador (localStorage). Sin servidor.   */
+const CLAVE = 'piragua_control_v1';
+const HOY = new Date(); HOY.setHours(0,0,0,0);
+const dia = n => { const d = new Date(HOY); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+const hoyISO = dia(0);
+const pesos = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'];
+const fCorta = iso => { const [y,m,d] = iso.split('-').map(Number); return d + ' ' + MES[m-1]; };
+const diasPara = iso => Math.round((new Date(iso+'T00:00:00') - HOY)/86400000);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+
+/* ---- Mapa de la tienda (HU-08) ---- */
+const ZONAS = [
+  {id:'A', nombre:'Mostrador', estantes:['A1','A2']},
+  {id:'B', nombre:'Pasillo', estantes:['B1','B2','B3']},
+  {id:'N', nombre:'Nevera', estantes:['N1','N2']},
+  {id:'G', nombre:'Bodega de atrás', estantes:['G1','G2','G3']}
+];
+const NIVELES = ['1 (abajo)','2 (medio)','3 (arriba)'];
+const nombreUbic = u => { if(!u) return 'Sin ubicación'; const [e,n] = u.split('-'); const z = ZONAS.find(z=>z.estantes.includes(e)); return (z?z.nombre:'') + ' · estante ' + e + ' · nivel ' + n; };
+const cortoUbic = u => { const [e,n] = u.split('-'); return e + ' nivel ' + n; };
+
+function datosIniciales(){
+  const P = [
+    ['p1','Leche entera 1 L (bolsa)',4200,3500,12,'und'],
+    ['p2','Arroz 500 g',2600,2100,15,'und'],
+    ['p3','Huevos AA (unidad)',650,520,30,'und'],
+    ['p4','Aceite 900 ml',11500,9600,4,'und'],
+    ['p5','Café molido 250 g',9800,8200,4,'und'],
+    ['p6','Azúcar 1 kg',5200,4400,6,'und'],
+    ['p7','Pasta spaghetti 250 g',2400,1900,8,'und'],
+    ['p8','Atún en lata 160 g',6900,5700,6,'und'],
+    ['p9','Gaseosa cola 1,5 L',6500,5300,6,'und'],
+    ['p10','Pan tajado 600 g',7200,6000,4,'und'],
+    ['p11','Queso costeño 500 g',11000,9000,3,'und'],
+    ['p12','Yogurt fresa 200 g',2500,1950,8,'und'],
+    ['p13','Jabón de barra 300 g',4300,3500,5,'und'],
+    ['p14','Papel higiénico x4',8900,7400,4,'und'],
+    ['p15','Salchichas x10',8700,7100,3,'und'],
+    ['p16','Lentejas 500 g',4100,3300,5,'und'],
+    ['p17','Panela 500 g',3300,2600,6,'und'],
+    ['p18','Harina de maíz 1 kg',3900,3200,5,'und'],
+    ['p19','Kumis 1 L',6800,5500,3,'und']
+  ].map(([id,nombre,precio,costo,min,unidad]) => ({id,nombre,precio,costo,min,unidad}));
+  let k = 0; const L = (p,qty,venc,ubic) => ({id:'l'+(++k), p, qty, venc, ubic, adelante:false});
+  const lotes = [
+    L('p1',14,dia(3),'N1-2'), L('p1',10,dia(9),'N1-2'),
+    L('p2',22,dia(160),'B1-2'), L('p2',24,dia(190),'G1-1'),
+    L('p3',90,dia(12),'A2-2'),
+    L('p4',7,dia(210),'B2-3'),
+    L('p5',3,dia(95),'A1-3'),
+    L('p6',11,dia(300),'B1-1'),
+    L('p7',20,dia(240),'B2-2'),
+    L('p8',9,dia(400),'B3-2'),
+    L('p9',8,dia(60),'G2-1'), L('p9',12,dia(75),'N2-1'),
+    L('p10',5,dia(2),'A1-2'), L('p10',2,dia(-1),'A1-2'),
+    L('p11',4,dia(6),'N1-1'),
+    L('p12',4,dia(-2),'N1-3'), L('p12',16,dia(13),'N1-3'),
+    L('p13',14,null,'B3-1'),
+    L('p14',2,null,'G3-2'),
+    L('p15',5,dia(11),'N2-2'),
+    L('p16',12,dia(220),'B1-3'),
+    L('p17',18,dia(150),'G1-2'),
+    L('p19',3,dia(-1),'N2-3'),
+  ];
+  // p18 harina: agotada (sin lotes)
+  const ventas = [
+    {h:'7:42 a. m.', total:38400, costo:31100, n:6},
+    {h:'9:15 a. m.', total:61200, costo:49800, n:9},
+    {h:'11:03 a. m.', total:27500, costo:22300, n:4},
+    {h:'1:20 p. m.', total:84900, costo:69400, n:11},
+    {h:'4:48 p. m.', total:52600, costo:42900, n:7}
+  ];
+  const gastos = [{h:'8:10 a. m.', d:'Hielo y bolsas', v:12000}];
+  return {fecha:hoyISO, productos:P, lotes, ventas, gastos, bajas:[], base:50000, cierre:null, sigLote:k};
+}
+let D;
+function cargar(){
+  try { D = JSON.parse(localStorage.getItem(CLAVE)); } catch(e){ D = null; }
+  if(!D || D.fecha !== hoyISO) D = datosIniciales();
+}
+function guardar(){ try { localStorage.setItem(CLAVE, JSON.stringify(D)); } catch(e){} }
+cargar();
+
+const prod = id => D.productos.find(p=>p.id===id);
+const lotesDe = id => D.lotes.filter(l=>l.p===id && l.qty>0).sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
+const stock = id => lotesDe(id).reduce((s,l)=>s+l.qty,0);
+const stockVendible = id => lotesDe(id).filter(l=>!l.venc || diasPara(l.venc)>=0).reduce((s,l)=>s+l.qty,0);
+
+/* ---- utilidades de interfaz ---- */
+const $ = s => document.querySelector(s);
+function toast(msg){ const t = document.createElement('div'); t.className='toast'; t.innerHTML=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3200); }
+function modal(html){ $('#capa').innerHTML = '<div class="modal-fondo" onclick="if(event.target===this)cerrarModal()"><div class="modal">'+html+'</div></div>'; }
+function cerrarModal(){ $('#capa').innerHTML=''; }
+function cabecera(titulo, sub, atras){
+  $('#top').innerHTML = (atras ? '<button class="back" onclick="history.length>1?history.back():ir(\'inicio\')" aria-label="Volver">‹</button>' :
+    '<div class="logo"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M2 14h20l-3 5H5z" fill="#0f5c6e"/><path d="M12 3v10M12 3l6 9h-6" stroke="#f28c28" stroke-width="2" fill="#f28c28"/></svg></div>') +
+    '<h1>'+titulo+(sub?'<span class="sub">'+sub+'</span>':'')+'</h1>';
+}
+function navegacion(act){
+  const it = [['inicio','🏠','Inicio'],['vender','🛒','Vender'],['buscar','📍','¿Dónde está?'],['vencen','⏰','Vencen'],['caja','💵','Caja']];
+  $('#nav').innerHTML = it.map(([r,ic,t]) => '<a href="#'+r+'" class="'+(r===act?'on':'')+'"><span class="ic">'+ic+'</span>'+t+'</a>').join('');
+}
+function ir(r){ location.hash = r; }
+
+/* ================= PANTALLAS ================= */
+const P = {};
+
+/* ---- Inicio ---- */
+P.inicio = () => {
+  cabecera('Piragua Control','Tienda La Piragua');
+  const ventasHoy = D.ventas.reduce((s,v)=>s+v.total,0);
+  const vencidos = D.lotes.filter(l=>l.qty>0 && l.venc && diasPara(l.venc)<0).length;
+  const porVencer = D.lotes.filter(l=>l.qty>0 && l.venc && diasPara(l.venc)>=0 && diasPara(l.venc)<=7).length;
+  const falt = D.productos.filter(p=>stock(p.id) < p.min).length;
+  const h = new Date().getHours();
+  return `
+  <p style="font-size:15px;color:var(--gris);margin-bottom:12px">${h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'}. Esto es lo que pasa hoy en la tienda.</p>
+  <div class="kpis">
+    <a class="kpi verde" href="#caja"><div class="l">Vendido hoy</div><div class="n">${pesos(ventasHoy)}</div><div class="mini">${D.ventas.length} ventas</div></a>
+    <a class="kpi ${vencidos?'rojo':''}" href="#vencen"><div class="l">Vencidos en estante</div><div class="n">${vencidos}</div><div class="mini">${vencidos?'Retírelos hoy':'Ninguno'}</div></a>
+    <a class="kpi ${porVencer?'naranja':''}" href="#vencen"><div class="l">Vencen esta semana</div><div class="n">${porVencer}</div><div class="mini">lotes por revisar</div></a>
+    <a class="kpi ${falt?'naranja':''}" href="#faltantes"><div class="l">Por pedir</div><div class="n">${falt}</div><div class="mini">productos bajos</div></a>
+  </div>
+  <h2>¿Qué va a hacer?</h2>
+  <div class="acciones">
+    <a class="accion prin" href="#vender"><span class="ic">🛒</span>Vender<small>Registrar una venta</small></a>
+    <a class="accion" href="#entrada"><span class="ic">📦</span>Entrada de mercancía<small>Llegó un pedido</small></a>
+    <a class="accion" href="#buscar"><span class="ic">📍</span>¿Dónde está?<small>Buscar un producto</small></a>
+    <a class="accion" href="#vencen"><span class="ic">⏰</span>Vencimientos<small>Qué sacar y qué poner adelante</small></a>
+    <a class="accion" href="#caja"><span class="ic">💵</span>Cierre de caja<small>${D.cierre?'Caja cerrada':'Cuánto gané hoy'}</small></a>
+    <a class="accion" href="#mapa"><span class="ic">🗺️</span>Mapa de la tienda<small>Zonas y estantes</small></a>
+  </div>
+  <div class="pie">Piragua Control · prototipo navegable<br><button onclick="reiniciar()">Restablecer datos iniciales</button></div>`;
+};
+function reiniciar(){ D = datosIniciales(); guardar(); cerrarModal(); render(); toast('Datos restablecidos.'); }
+
+/* ---- HU-01 Entrada de mercancía ---- */
+let EN = {};
+P.entrada = () => {
+  cabecera('Entrada de mercancía','Registrar lo que llegó', true);
+  const opts = D.productos.map(p=>`<option value="${esc(p.nombre)}">`).join('');
+  const zonaOpts = ZONAS.map(z=>`<option value="${z.id}" ${EN.zona===z.id?'selected':''}>${z.nombre}</option>`).join('');
+  const z = ZONAS.find(z=>z.id===EN.zona);
+  const estOpts = z ? z.estantes.map(e=>`<option ${EN.est===e?'selected':''}>${e}</option>`).join('') : '';
+  const nivOpts = NIVELES.map((n,i)=>`<option value="${i+1}" ${EN.niv==i+1?'selected':''}>${n}</option>`).join('');
+  const e = EN.errores || {};
+  const ce = k => e[k] ? 'campo-err' : '';
+  const em = k => e[k] ? `<div class="err">⚠️ <span>${e[k]}</span></div>` : '';
+  return `
+  <div class="card">
+    <div class="${ce('prod')}"><label for="f-prod">Producto</label>
+    <input id="f-prod" list="lista-prod" placeholder="Escriba el nombre, ej: leche" value="${esc(EN.prod||'')}" oninput="EN.prod=this.value;sugerir()" autocomplete="off">
+    <datalist id="lista-prod">${opts}</datalist>${em('prod')}</div>
+    <div id="sug">${EN.sug||''}</div>
+    <div class="fila">
+      <div class="${ce('qty')}"><label for="f-qty">Cantidad</label><input id="f-qty" type="number" inputmode="numeric" min="1" value="${EN.qty??''}" oninput="EN.qty=this.value"></div>
+      <div class="${ce('costo')}"><label for="f-costo">Costo por unidad</label><input id="f-costo" type="number" inputmode="numeric" value="${EN.costo??''}" oninput="EN.costo=this.value"></div>
+    </div>
+    ${em('qty')}${em('costo')}
+    <div class="${ce('venc')}"><label for="f-venc">Fecha de vencimiento</label>
+    <input id="f-venc" type="date" value="${EN.venc||''}" ${EN.novence?'disabled':''} oninput="EN.venc=this.value">
+    <label class="check"><input type="checkbox" ${EN.novence?'checked':''} onchange="EN.novence=this.checked;if(this.checked)EN.venc='';render()"> Este producto no se vence (aseo, plásticos)</label>${em('venc')}</div>
+  </div>
+  <div class="card">
+    <div style="font-weight:700">¿Dónde lo va a guardar?</div>
+    <div class="mini">Así cualquiera lo encuentra después.</div>
+    <div class="${ce('ubic')}">
+    <label for="f-zona">Zona</label>
+    <select id="f-zona" onchange="EN.zona=this.value;EN.est='';render()"><option value="">Elija la zona</option>${zonaOpts}</select>
+    <div class="fila">
+      <div><label for="f-est">Estante</label><select id="f-est" onchange="EN.est=this.value" ${z?'':'disabled'}><option value="">-</option>${estOpts}</select></div>
+      <div><label for="f-niv">Nivel</label><select id="f-niv" onchange="EN.niv=this.value"><option value="">-</option>${nivOpts}</select></div>
+    </div>${em('ubic')}</div>
+  </div>
+  ${EN.avisoPrecio?`<div class="aviso">${EN.avisoPrecio}</div>`:''}
+  <button class="btn prin mt" id="b-guardar" onclick="guardarEntrada()">Guardar entrada</button>`;
+};
+function sugerir(){
+  const p = D.productos.find(p=>norm(p.nombre)===norm(EN.prod||''));
+  let h = '';
+  if(p){
+    const ls = lotesDe(p.id);
+    if(ls.length){ h = `<div class="info">📍 Este producto ya está guardado en <b>${nombreUbic(ls[0].ubic)}</b>. Guárdelo en el mismo sitio para no regarlo por la tienda.<br><button class="btn peq sec mt8" onclick="usarUbic('${ls[0].ubic}')">Usar esa ubicación</button></div>`; }
+    if(EN.costo===undefined || EN.costo==='') { EN.costo = p.costo; const c=$('#f-costo'); if(c) c.value=p.costo; }
+  }
+  EN.sug = h; const s = $('#sug'); if(s) s.innerHTML = h;
+}
+function usarUbic(u){ const [e,n] = u.split('-'); EN.est=e; EN.niv=n; EN.zona = ZONAS.find(z=>z.estantes.includes(e)).id; render(); }
+function guardarEntrada(){
+  const e = {};
+  const p = D.productos.find(p=>norm(p.nombre)===norm((EN.prod||'').trim()));
+  if(!(EN.prod||'').trim()) e.prod = 'Escriba qué producto llegó.';
+  else if(!p) e.prod = `"${esc(EN.prod)}" no está en la lista de productos. Revise cómo lo escribió o créelo primero como producto nuevo.`;
+  const q = Number(EN.qty);
+  if(!EN.qty || !Number.isInteger(q) || q<=0) e.qty = 'Escriba una cantidad mayor que cero.';
+  if(EN.costo==='' || EN.costo===undefined || Number(EN.costo)<=0) e.costo = 'Escriba cuánto le costó cada unidad.';
+  if(!EN.novence){
+    if(!EN.venc) e.venc = 'Escriba la fecha de vencimiento o marque que el producto no se vence.';
+    else if(diasPara(EN.venc) < 0) e.venc = `La fecha de vencimiento (${fCorta(EN.venc)}) ya pasó. Ese producto no se debe recibir: devuélvaselo al proveedor.`;
+  }
+  if(!EN.zona || !EN.est || !EN.niv) e.ubic = 'Elija dónde va a guardar el producto. Sin ubicación no se puede guardar la entrada.';
+  EN.errores = e;
+  if(Object.keys(e).length){ render(); const f = document.querySelector('.campo-err'); if(f) f.scrollIntoView({block:'center'}); return; }
+  if(p && Number(EN.costo) >= p.precio && !EN.confirmaPrecio){
+    modal(`<h3>El costo es igual o mayor que el precio de venta</h3><p>Cada unidad de <b>${esc(p.nombre)}</b> le costó ${pesos(EN.costo)} y usted la vende a ${pesos(p.precio)}. Así pierde plata en cada venta.</p>
+    <div class="botones"><button class="btn sec" onclick="cerrarModal()">Revisar costo</button><button class="btn prin" onclick="EN.confirmaPrecio=true;cerrarModal();guardarEntrada()">Guardar igual</button></div>`); return;
+  }
+  const ubic = EN.est + '-' + EN.niv;
+  D.lotes.push({id:'l'+(++D.sigLote), p:p.id, qty:q, venc:EN.novence?null:EN.venc, ubic, adelante:false});
+  p.costo = Number(EN.costo);
+  guardar();
+  const res = {nombre:p.nombre, q, ubic, venc:EN.novence?null:EN.venc, total:stock(p.id)};
+  EN = {};
+  $('#main').innerHTML = `<div class="exito"><div class="circ">✓</div><h2>Entrada guardada</h2>
+    <p><b>${res.q} und</b> de ${esc(res.nombre)}</p>
+    <p>📍 ${nombreUbic(res.ubic)}</p>
+    <p>${res.venc?'⏰ Vence el '+fCorta(res.venc):'No se vence'}</p>
+    <p>Ahora hay <b>${res.total}</b> unidades en la tienda.</p></div>
+    <a class="btn prin" href="#entrada" onclick="setTimeout(render,0)">Registrar otra entrada</a>
+    <a class="btn sec mt8" href="#inicio">Ir al inicio</a>`;
+}
+
+/* ---- HU-02 ¿Dónde está? ---- */
+let BQ = '';
+P.buscar = () => {
+  cabecera('¿Dónde está?','Buscar un producto en la tienda');
+  return `<input id="f-buscar" placeholder="Escriba el producto, ej: arroz" value="${esc(BQ)}" oninput="BQ=this.value;pintarBusqueda()" autocomplete="off">
+  <div id="res" class="mt"></div>`;
+};
+function pintarBusqueda(){
+  const q = norm(BQ.trim()); const r = $('#res'); if(!r) return;
+  if(!q){ r.innerHTML = `<div class="mini" style="margin-bottom:8px">Más buscados</div>` + ['p1','p2','p3','p10','p12'].map(tarjetaProd).join(''); return; }
+  if(q.length < 2){ r.innerHTML = `<div class="aviso">Escriba al menos 2 letras para buscar.</div>`; return; }
+  const hs = D.productos.filter(p=>norm(p.nombre).includes(q));
+  if(!hs.length){ r.innerHTML = `<div class="vacio"><span class="ic">🔍</span><b>No encontramos "${esc(BQ.trim())}"</b><br>Revise cómo lo escribió. Si es un producto nuevo, regístrelo en Entrada de mercancía.<br><a class="btn peq sec mt8" href="#entrada">Ir a Entrada de mercancía</a></div>`; return; }
+  r.innerHTML = hs.map(p=>tarjetaProd(p.id)).join('');
+}
+function tarjetaProd(id){
+  const p = prod(id); const ls = lotesDe(id); const s = stock(id);
+  if(!s) return `<div class="item"><div class="t">${esc(p.nombre)}</div><div class="err">🚫 <span><b>Agotado:</b> no hay unidades en la tienda. Ya quedó en la lista de productos por pedir.</span></div><a class="btn peq sec mt8" href="#faltantes">Ver lista por pedir</a></div>`;
+  const ubics = [...new Set(ls.map(l=>l.ubic))];
+  return `<div class="item clic" onclick="ir('producto/${id}')"><div class="t">${esc(p.nombre)}</div>
+    <div class="d">${s} unidades · ${pesos(p.precio)}</div>
+    ${ubics.map(u=>`<span class="chip">📍 ${cortoUbic(u)} · ${ZONAS.find(z=>z.estantes.includes(u.split('-')[0])).nombre}</span>`).join('')}</div>`;
+}
+P.producto = (id) => {
+  const p = prod(id); cabecera(p.nombre,'Dónde está guardado', true);
+  const ls = lotesDe(id); const est = new Set(ls.map(l=>l.ubic.split('-')[0]));
+  return `<div class="card"><div class="lin"><span>Unidades en la tienda</span><b>${stock(id)}</b></div><div class="lin"><span>Precio de venta</span><b>${pesos(p.precio)}</b></div><div class="lin"><span>Mínimo para pedir</span><b>${p.min}</b></div></div>
+  <h2>Lotes y ubicación</h2>
+  ${ls.map(l=>{const dd=l.venc?diasPara(l.venc):null; const c = dd===null?'':dd<0?'rojo':dd<=7?'naranja':dd<=15?'amarillo':'verde';
+    return `<div class="item"><div class="t">📍 ${nombreUbic(l.ubic)}</div><div class="d">${l.qty} unidades</div>
+    ${l.venc?`<span class="chip ${c}">${dd<0?'Vencido hace '+(-dd)+' días':dd===0?'Vence hoy':'Vence el '+fCorta(l.venc)}</span>`:'<span class="chip">No se vence</span>'}</div>`}).join('')}
+  <h2>En el mapa</h2>${mapaHTML(est)}`;
+};
+
+/* ---- HU-08 Mapa ---- */
+function mapaHTML(marcados){
+  return `<div class="mapa">${ZONAS.map(z=>`<div class="zona ${z.estantes.some(e=>marcados.has(e))?'on':''}"><h4>${z.nombre}</h4>${z.estantes.map(e=>{
+    const n = new Set(D.lotes.filter(l=>l.qty>0 && l.ubic.startsWith(e+'-')).map(l=>l.p)).size;
+    return `<div class="estante ${marcados.has(e)?'on':''}" onclick="ir('estante/${e}')"><span>${e}</span><span>${n} prod.</span></div>`}).join('')}</div>`).join('')}</div>`;
+}
+P.mapa = () => { cabecera('Mapa de la tienda','Zonas, estantes y niveles', true); return `<p class="mini" style="margin-bottom:10px">Toque un estante para ver qué hay guardado.</p>${mapaHTML(new Set())}`; };
+P.estante = (e) => {
+  cabecera('Estante '+e, ZONAS.find(z=>z.estantes.includes(e)).nombre, true);
+  const ls = D.lotes.filter(l=>l.qty>0 && l.ubic.startsWith(e+'-'));
+  if(!ls.length) return `<div class="vacio"><span class="ic">📭</span>Este estante está vacío.</div>`;
+  return [3,2,1].map(n=>{ const x = ls.filter(l=>l.ubic===e+'-'+n); return `<div class="sec-t">Nivel ${NIVELES[n-1]}</div>` + (x.length? x.map(l=>`<div class="item"><div class="t">${esc(prod(l.p).nombre)}</div><div class="d">${l.qty} unidades${l.venc?' · vence '+fCorta(l.venc):''}</div></div>`).join('') : '<div class="mini">Vacío</div>'); }).join('');
+};
+
+/* ---- HU-03 Vencimientos ---- */
+P.vencen = () => {
+  cabecera('Vencimientos','Qué sacar y qué poner adelante');
+  const ls = D.lotes.filter(l=>l.qty>0 && l.venc && diasPara(l.venc)<=15).sort((a,b)=>a.venc.localeCompare(b.venc));
+  const g = [
+    ['Vencidos: retírelos del estante', 'var(--rojo)', ls.filter(l=>diasPara(l.venc)<0)],
+    ['Vencen en los próximos 7 días', 'var(--naranja)', ls.filter(l=>diasPara(l.venc)>=0 && diasPara(l.venc)<=7)],
+    ['Vencen en 8 a 15 días', 'var(--amarillo)', ls.filter(l=>diasPara(l.venc)>7)]
+  ];
+  if(!ls.length) return `<div class="vacio"><span class="ic">✅</span><b>Todo en orden</b><br>Ningún producto vence en los próximos 15 días.</div>`;
+  return g.filter(x=>x[2].length).map(([t,c,arr])=>`<div class="sec-t"><span class="dot" style="background:${c}"></span>${t} (${arr.length})</div>` + arr.map(l=>{
+    const p = prod(l.p); const dd = diasPara(l.venc);
+    const etiqueta = dd<0 ? `<span class="chip rojo">Vencido hace ${-dd} ${-dd===1?'día':'días'} · no se puede vender</span>` : dd===0 ? `<span class="chip naranja">Vence hoy</span>` : `<span class="chip ${dd<=7?'naranja':'amarillo'}">Vence en ${dd} ${dd===1?'día':'días'} (${fCorta(l.venc)})</span>`;
+    const boton = dd<0 ? `<button class="btn peq peligro mt8" onclick="pedirBaja('${l.id}')">Dar de baja</button>` :
+      (l.adelante ? `<span class="chip verde">✓ Ya está adelante</span>` : `<button class="btn peq sec mt8" onclick="adelante('${l.id}')">Ya lo puse adelante</button>`);
+    return `<div class="item"><div class="t">${esc(p.nombre)}</div><div class="d">${l.qty} und · ${pesos(l.qty*p.costo)} en riesgo</div>
+    <span class="chip">📍 ${nombreUbic(l.ubic)}</span><br>${etiqueta}<br>${boton}</div>`}).join('')).join('') +
+    `<div class="info mt">Consejo: lo que vence primero va adelante en el estante, para que salga primero.</div>`;
+};
+function adelante(id){ D.lotes.find(l=>l.id===id).adelante = true; guardar(); render(); toast('Listo. Ese lote quedó marcado como puesto adelante.'); }
+function pedirBaja(id){
+  const l = D.lotes.find(l=>l.id===id); const p = prod(l.p);
+  modal(`<h3>Dar de baja ${esc(p.nombre)}</h3><p>Va a sacar <b>${l.qty} unidades</b> vencidas del ${cortoUbic(l.ubic)}. Se registran como pérdida de <b>${pesos(l.qty*p.costo)}</b> en el cierre de hoy.</p>
+  <div class="botones"><button class="btn sec" onclick="cerrarModal()">Cancelar</button><button class="btn peligro" onclick="darBaja('${id}')">Sí, dar de baja</button></div>`);
+}
+function darBaja(id){
+  const l = D.lotes.find(l=>l.id===id); const p = prod(l.p);
+  D.bajas.push({p:p.nombre, qty:l.qty, v:l.qty*p.costo}); l.qty = 0; guardar(); cerrarModal(); render();
+  toast('Producto dado de baja. La pérdida quedó registrada en el cierre de caja.');
+}
+
+/* ---- HU-06 Faltantes ---- */
+P.faltantes = () => {
+  cabecera('Por pedir','Productos por debajo del mínimo', true);
+  const f = D.productos.filter(p=>stock(p.id) < p.min).sort((a,b)=>stock(a.id)-stock(b.id));
+  if(!f.length) return `<div class="vacio"><span class="ic">✅</span>Nada por pedir. Todo está por encima del mínimo.</div>`;
+  return f.map(p=>{ const s = stock(p.id); return `<div class="item"><div class="t">${esc(p.nombre)}</div>
+  <div class="d">Hay ${s} · mínimo ${p.min} · sugerido pedir <b>${p.min*2 - s}</b></div>${s===0?'<span class="chip rojo">Agotado</span>':'<span class="chip naranja">Bajo</span>'}</div>`; }).join('');
+};
+
+/* ---- HU-04 Vender ---- */
+let CARRO = []; let VQ = '';
+P.vender = () => {
+  cabecera('Vender','Nueva venta');
+  return `<input id="f-vbuscar" placeholder="Buscar producto para vender" value="${esc(VQ)}" oninput="VQ=this.value;pintarVenta()" autocomplete="off">
+  <div id="vres" class="resultados mt"></div>
+  <div class="card mt" id="carro"></div>`;
+};
+function pintarVenta(){
+  const q = norm(VQ.trim()); const r = $('#vres');
+  const lista = q ? D.productos.filter(p=>norm(p.nombre).includes(q)) : ['p1','p3','p2','p12','p9'].map(prod);
+  r.innerHTML = (q?'':'<div class="mini" style="margin-bottom:8px">Lo que más se vende</div>') + (lista.length ? lista.slice(0,6).map(p=>`<div class="item"><div><div class="t">${esc(p.nombre)}</div><div class="d">${pesos(p.precio)} · quedan ${stockVendible(p.id)}</div></div><button class="add" onclick="agregar('${p.id}')">+ Agregar</button></div>`).join('') : `<div class="aviso">No encontramos "${esc(VQ.trim())}". Revise cómo lo escribió.</div>`);
+  pintarCarro();
+}
+function agregar(id){
+  const p = prod(id); const it = CARRO.find(i=>i.id===id); const actual = it ? it.q : 0;
+  const v = stockVendible(id); const tot = stock(id);
+  if(v === 0 && tot > 0){ modal(`<h3>No se puede vender</h3><p>Las ${tot} unidades que quedan de <b>${esc(p.nombre)}</b> están vencidas. No se pueden vender.</p><p>Retírelas del estante en Vencimientos.</p><div class="botones"><button class="btn sec" onclick="cerrarModal()">Entendido</button><a class="btn prin" href="#vencen" onclick="cerrarModal()">Ir a Vencimientos</a></div>`); return; }
+  if(v === 0){ toast(`⚠️ ${esc(p.nombre)} está agotado. No hay unidades para vender.`); return; }
+  if(actual + 1 > v){ toast(`⚠️ Solo quedan ${v} unidades de ${esc(p.nombre)}. Ajuste la cantidad.`); return; }
+  if(it) it.q++; else CARRO.push({id, q:1});
+  pintarCarro();
+}
+function cambiar(id, d){
+  const it = CARRO.find(i=>i.id===id); const v = stockVendible(id);
+  if(d>0 && it.q + 1 > v){ toast(`⚠️ Solo quedan ${v} unidades de ${esc(prod(id).nombre)}. Ajuste la cantidad.`); return; }
+  it.q += d; if(it.q<=0) CARRO = CARRO.filter(i=>i.id!==id); pintarCarro();
+}
+const totalCarro = () => CARRO.reduce((s,i)=>s+i.q*prod(i.id).precio,0);
+function pintarCarro(){
+  const c = $('#carro'); if(!c) return;
+  if(!CARRO.length){ c.innerHTML = `<div style="font-weight:700">Venta actual</div><div class="mini mt8">Todavía no hay productos. Toque "+ Agregar".</div>
+    <div class="total-bar"><span>Total<br><b>${pesos(0)}</b></span><button onclick="cobrar()">Cobrar</button></div>`; return; }
+  c.innerHTML = `<div style="font-weight:700">Venta actual</div>` + CARRO.map(i=>{const p=prod(i.id); return `<div class="cart-item"><div class="nm">${esc(p.nombre)}<small>${pesos(p.precio)} c/u</small></div>
+    <div class="qty"><button onclick="cambiar('${i.id}',-1)">−</button><span>${i.q}</span><button onclick="cambiar('${i.id}',1)">+</button></div></div>`}).join('') +
+    `<div class="total-bar"><span>Total<br><b>${pesos(totalCarro())}</b></span><button onclick="cobrar()">Cobrar</button></div>`;
+}
+function cobrar(){
+  if(D.cierre){ modal(`<h3>La caja de hoy ya está cerrada</h3><p>Se cerró a las ${D.cierre.h}. Las ventas nuevas se registran mañana.</p><div class="botones"><button class="btn prin" onclick="cerrarModal()">Entendido</button></div>`); return; }
+  if(!CARRO.length){ toast('⚠️ Agregue al menos un producto antes de cobrar.'); return; }
+  const t = totalCarro();
+  modal(`<h3>Cobrar ${pesos(t)}</h3><p>Pago en efectivo</p><label for="f-recibe">¿Con cuánto paga el cliente?</label>
+  <input id="f-recibe" type="number" inputmode="numeric" oninput="calcCambio(${t})" placeholder="Ej: 20000">
+  <div class="fila mt8">${[t, Math.ceil(t/10000)*10000, Math.ceil(t/50000)*50000].filter((v,i,a)=>a.indexOf(v)===i).map(v=>`<button class="btn peq sec" onclick="$('#f-recibe').value=${v};calcCambio(${t})">${pesos(v)}</button>`).join('')}</div>
+  <div id="cambio"></div>
+  <div class="botones"><button class="btn sec" onclick="cerrarModal()">Volver</button><button class="btn prin" id="b-confirmar" onclick="confirmarVenta(${t})">Confirmar venta</button></div>`);
+}
+function calcCambio(t){
+  const r = Number($('#f-recibe').value); const c = $('#cambio');
+  if(!r){ c.innerHTML=''; return; }
+  c.innerHTML = r < t ? `<div class="err">⚠️ <span>El dinero recibido es menor que el total. Faltan ${pesos(t-r)}.</span></div>` : `<div class="ok">Cambio para el cliente: <b>${pesos(r-t)}</b></div>`;
+}
+function confirmarVenta(t){
+  const r = Number($('#f-recibe').value);
+  if(!r){ $('#cambio').innerHTML = `<div class="err">⚠️ <span>Escriba con cuánto paga el cliente.</span></div>`; return; }
+  if(r < t){ calcCambio(t); return; }
+  let costo = 0, n = 0;
+  CARRO.forEach(i=>{ let q = i.q; const p = prod(i.id); n += i.q; costo += i.q*p.costo;
+    for(const l of lotesDe(i.id).filter(l=>!l.venc || diasPara(l.venc)>=0)){ const s = Math.min(q,l.qty); l.qty -= s; q -= s; if(!q) break; } });
+  const ahora = new Date(); const hh = ahora.getHours(), mm = String(ahora.getMinutes()).padStart(2,'0');
+  D.ventas.push({h:((hh%12)||12)+':'+mm+(hh<12?' a. m.':' p. m.'), total:t, costo, n});
+  const resumen = CARRO.map(i=>`${i.q} × ${esc(prod(i.id).nombre)}`).join('<br>');
+  const bajos = CARRO.filter(i=>stock(i.id) < prod(i.id).min).map(i=>prod(i.id).nombre);
+  CARRO = []; VQ=''; guardar(); cerrarModal();
+  $('#main').innerHTML = `<div class="exito"><div class="circ">✓</div><h2>Venta registrada</h2><p style="font-size:22px;color:var(--texto);font-weight:800">${pesos(t)}</p>
+  <p>Cambio: <b>${pesos(r-t)}</b></p><p class="mini">${resumen}</p><p>El inventario ya se descontó.</p>
+  ${bajos.length?`<div class="aviso" style="text-align:left">Quedó bajo: ${bajos.map(esc).join(', ')}. Ya está en la lista por pedir.</div>`:''}</div>
+  <a class="btn prin" href="#vender" onclick="setTimeout(render,0)">Nueva venta</a><a class="btn sec mt8" href="#inicio">Ir al inicio</a>`;
+}
+
+/* ---- HU-05 Cierre de caja ---- */
+let CJ = {};
+P.caja = () => {
+  cabecera('Cierre de caja','Cuánto vendí y cuánto gané hoy');
+  const ventas = D.ventas.reduce((s,v)=>s+v.total,0);
+  const costo = D.ventas.reduce((s,v)=>s+v.costo,0);
+  const gastos = D.gastos.reduce((s,g)=>s+g.v,0);
+  const perd = D.bajas.reduce((s,b)=>s+b.v,0);
+  const gan = ventas - costo - gastos - perd;
+  const esperado = D.base + ventas - gastos;
+  const resumen = `<div class="card">
+    <div class="lin"><span>Ventas del día (${D.ventas.length})</span><b>${pesos(ventas)}</b></div>
+    <div class="lin"><span>Lo que costó la mercancía vendida</span><span class="neg">− ${pesos(costo)}</span></div>
+    <div class="lin"><span>Gastos del día</span><span class="neg">− ${pesos(gastos)}</span></div>
+    <div class="lin"><span>Pérdidas por vencidos o dañados</span><span class="neg">− ${pesos(perd)}</span></div>
+    <div class="lin total"><span>Ganancia del día</span><span class="${gan>=0?'pos':'neg'}">${pesos(gan)}</span></div></div>`;
+  if(D.cierre) return `<div class="ok" style="margin:0 0 12px">✓ La caja de hoy ya se cerró a las ${D.cierre.h}. Puede consultar el cierre pero no repetirlo.</div>${resumen}
+    <div class="card"><div class="lin"><span>Efectivo esperado</span><b>${pesos(D.cierre.esperado)}</b></div><div class="lin"><span>Efectivo contado</span><b>${pesos(D.cierre.contado)}</b></div>
+    <div class="lin"><span>Diferencia</span><b class="${D.cierre.dif?'neg':''}">${pesos(D.cierre.dif)}</b></div>${D.cierre.nota?`<div class="mini mt8">Nota: ${esc(D.cierre.nota)}</div>`:''}</div>`;
+  return `${resumen}
+  <div class="card"><div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">Gastos de hoy <button class="btn peq sec" onclick="nuevoGasto()">+ Gasto</button></div>
+    ${D.gastos.map(g=>`<div class="lin"><span>${esc(g.d)} <span class="mini">${g.h}</span></span><span>${pesos(g.v)}</span></div>`).join('') || '<div class="mini mt8">Sin gastos.</div>'}</div>
+  <div class="card">
+    <div class="lin"><span>Base con que abrió la caja</span><b>${pesos(D.base)}</b></div>
+    <div class="lin"><span>Efectivo que debería haber</span><b>${pesos(esperado)}</b></div>
+    <div class="${CJ.err?'campo-err':''}"><label for="f-contado">¿Cuánto efectivo contó en la caja?</label>
+    <input id="f-contado" type="number" inputmode="numeric" placeholder="Cuente billetes y monedas" value="${CJ.contado??''}" oninput="CJ.contado=this.value">
+    ${CJ.err?`<div class="err">⚠️ <span>${CJ.err}</span></div>`:''}</div>
+  </div>
+  <button class="btn prin" id="b-cerrar" onclick="cerrarCaja(${esperado})">Cerrar caja</button>`;
+};
+function nuevoGasto(){
+  modal(`<h3>Registrar gasto</h3><label for="g-d">¿En qué se gastó?</label><input id="g-d" placeholder="Ej: recibo de luz, bolsas">
+  <label for="g-v">Valor</label><input id="g-v" type="number" inputmode="numeric"><div id="g-err"></div>
+  <div class="botones"><button class="btn sec" onclick="cerrarModal()">Cancelar</button><button class="btn prin" onclick="guardarGasto()">Guardar</button></div>`);
+}
+function guardarGasto(){
+  const d = $('#g-d').value.trim(), v = Number($('#g-v').value);
+  if(!d || !v || v<=0){ $('#g-err').innerHTML = `<div class="err">⚠️ <span>Escriba en qué se gastó y un valor mayor que cero.</span></div>`; return; }
+  const a = new Date(); const hh=a.getHours();
+  D.gastos.push({h:((hh%12)||12)+':'+String(a.getMinutes()).padStart(2,'0')+(hh<12?' a. m.':' p. m.'), d, v}); guardar(); cerrarModal(); render(); toast('Gasto registrado.');
+}
+function cerrarCaja(esperado){
+  CJ.err = '';
+  if(CJ.contado===undefined || CJ.contado===''){ CJ.err = 'Escriba el efectivo que contó en la caja.'; render(); return; }
+  const c = Number(CJ.contado);
+  if(c < 0){ CJ.err = 'El efectivo contado no puede ser negativo.'; render(); return; }
+  if(!D.ventas.length && !CJ.okCero){ modal(`<h3>Hoy no hay ventas registradas</h3><p>¿Desea cerrar la caja en cero?</p><div class="botones"><button class="btn sec" onclick="cerrarModal()">No, volver</button><button class="btn prin" onclick="CJ.okCero=true;cerrarModal();cerrarCaja(${esperado})">Sí, cerrar</button></div>`); return; }
+  const dif = c - esperado;
+  if(dif !== 0 && !CJ.nota){
+    modal(`<h3>Hay una diferencia de ${pesos(Math.abs(dif))}</h3><p>${dif<0?'Falta':'Sobra'} plata: el sistema esperaba <b>${pesos(esperado)}</b> y usted contó <b>${pesos(c)}</b>. Revise antes de cerrar.</p>
+    <label for="f-nota">Si ya revisó, escriba qué pasó</label><input id="f-nota" placeholder="Ej: le fié a doña Carmen">
+    <div id="n-err"></div>
+    <div class="botones"><button class="btn sec" onclick="cerrarModal()">Volver a contar</button><button class="btn prin" onclick="const n=$('#f-nota').value.trim();if(!n){$('#n-err').innerHTML='<div class=&quot;err&quot;>⚠️ <span>Escriba una nota para cerrar con diferencia.</span></div>';return;}CJ.nota=n;cerrarModal();cerrarCaja(${esperado})">Cerrar con nota</button></div>`); return;
+  }
+  const a = new Date(); const hh=a.getHours();
+  D.cierre = {h:((hh%12)||12)+':'+String(a.getMinutes()).padStart(2,'0')+(hh<12?' a. m.':' p. m.'), esperado, contado:c, dif, nota:CJ.nota||''};
+  CJ = {}; guardar(); render(); toast('Caja cerrada. El resumen del día quedó guardado.');
+}
+
+/* ---- enrutador ---- */
+function render(){
+  const [r, arg] = (location.hash.slice(1) || 'inicio').split('/');
+  const f = P[r] || P.inicio;
+  $('#main').innerHTML = f(arg);
+  navegacion(['inicio','vender','buscar','vencen','caja'].includes(r) ? r : (r==='producto'||r==='estante'||r==='mapa'?'buscar':r==='faltantes'?'inicio':'inicio'));
+  if(r==='buscar') pintarBusqueda();
+  if(r==='vender') pintarVenta();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', ()=>{ cerrarModal(); render(); });
+render();
+if('serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
