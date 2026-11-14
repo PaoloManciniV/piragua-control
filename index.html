@@ -112,6 +112,46 @@ input:focus,select:focus{outline:none;border-color:var(--azul)}
 .seg{display:flex;background:#e5ecee;border-radius:10px;padding:3px;margin-bottom:12px}
 .seg button{flex:1;border:none;background:none;padding:9px;font-weight:700;border-radius:8px;font-size:14px;color:var(--gris);cursor:pointer}
 .seg button.on{background:#fff;color:var(--azul)}
+/* ===== Versión escritorio (PC) ===== */
+.solo-pc{display:none!important}
+@media (min-width: 900px){
+  body{background:#e9eff1}
+  .app{max-width:none;box-shadow:none;background:#f3f6f7;padding-left:240px}
+  header.top{padding:18px 40px;position:sticky}
+  header.top h1{font-size:22px}
+  header.top .logo{display:none}
+  nav.bottom{top:0;bottom:0;left:0;transform:none;width:240px;max-width:none;flex-direction:column;border-top:none;border-right:1px solid var(--borde);padding:0 12px;background:#fff;justify-content:flex-start;gap:2px}
+  nav.bottom .marca{display:flex!important;align-items:center;gap:10px;padding:18px 8px 22px;font-weight:800;color:var(--azul);font-size:18px}
+  nav.bottom .marca small{display:block;font-weight:400;color:var(--gris);font-size:12px}
+  nav.bottom a{flex:none;display:flex!important;align-items:center;gap:12px;text-align:left;padding:11px 12px;font-size:15px;border-radius:10px}
+  nav.bottom a .ic{display:inline;font-size:20px;margin:0}
+  nav.bottom a.on{background:var(--azul-claro)}
+  nav.bottom a:hover{background:#f0f5f6}
+  nav.bottom .sep{height:1px;background:var(--borde);margin:10px 4px}
+  main{padding:28px 40px 60px;max-width:1180px;width:100%}
+  .kpis{grid-template-columns:repeat(4,1fr);gap:14px}
+  .kpi .n{font-size:28px}
+  .acciones{grid-template-columns:repeat(3,1fr);gap:14px}
+  .accion{min-height:110px;font-size:16px}
+  .accion:hover,.kpi:hover{box-shadow:0 4px 14px rgba(15,92,110,.12)}
+  .formulario{max-width:760px}
+  #res,#vres{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  #res>.mini,#res>.aviso,#res>.vacio,#vres>.mini,#vres>.aviso{grid-column:1/-1}
+  .dos-col{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:start}
+  .dos-col #vres{grid-template-columns:1fr}
+  .dos-col #carro{position:sticky;top:90px;margin-top:0}
+  .dos-col .total-bar{position:static}
+  .mapa{grid-template-columns:repeat(4,1fr)}
+  .lista-ancha{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .caja-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .modal-fondo{align-items:center}
+  .modal{border-radius:18px;max-width:520px}
+  .toast{bottom:28px;left:calc(50% + 120px)}
+  .exito{max-width:520px;margin:0 auto}
+  .exito ~ .btn{max-width:520px;margin-left:auto;margin-right:auto}
+  .btn.prin.mt#b-guardar,#b-cerrar{max-width:760px}
+  .sec-t{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
@@ -226,7 +266,10 @@ function cabecera(titulo, sub, atras){
 }
 function navegacion(act){
   const it = [['inicio','🏠','Inicio'],['vender','🛒','Vender'],['buscar','📍','¿Dónde está?'],['vencen','⏰','Vencen'],['caja','💵','Caja']];
-  $('#nav').innerHTML = it.map(([r,ic,t]) => '<a href="#'+r+'" class="'+(r===act?'on':'')+'"><span class="ic">'+ic+'</span>'+t+'</a>').join('');
+  const extra = [['entrada','📦','Entrada de mercancía'],['mapa','🗺️','Mapa de la tienda'],['faltantes','📋','Por pedir']];
+  const a = (x,pc) => '<a href="#'+x[0]+'" class="'+(x[0]===act?'on ':'')+(pc?'solo-pc':'')+'"><span class="ic">'+x[1]+'</span>'+x[2]+'</a>';
+  $('#nav').innerHTML = '<div class="marca solo-pc"><div class="logo" style="background:var(--azul)"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M2 14h20l-3 5H5z" fill="#fff"/><path d="M12 3v10M12 3l6 9h-6" stroke="#f28c28" stroke-width="2" fill="#f28c28"/></svg></div><div>Piragua Control<small>Tienda La Piragua</small></div></div>' +
+    it.map(x=>a(x,false)).join('') + '<div class="sep solo-pc"></div>' + extra.map(x=>a(x,true)).join('');
 }
 function ir(r){ location.hash = r; }
 
@@ -274,7 +317,7 @@ P.entrada = () => {
   const e = EN.errores || {};
   const ce = k => e[k] ? 'campo-err' : '';
   const em = k => e[k] ? `<div class="err">⚠️ <span>${e[k]}</span></div>` : '';
-  return `
+  return `<div class="formulario">
   <div class="card">
     <div class="${ce('prod')}"><label for="f-prod">Producto</label>
     <input id="f-prod" list="lista-prod" placeholder="Escriba el nombre, ej: leche" value="${esc(EN.prod||'')}" oninput="EN.prod=this.value;sugerir()" autocomplete="off">
@@ -301,7 +344,7 @@ P.entrada = () => {
     </div>${em('ubic')}</div>
   </div>
   ${EN.avisoPrecio?`<div class="aviso">${EN.avisoPrecio}</div>`:''}
-  <button class="btn prin mt" id="b-guardar" onclick="guardarEntrada()">Guardar entrada</button>`;
+  <button class="btn prin mt" id="b-guardar" onclick="guardarEntrada()">Guardar entrada</button></div>`;
 };
 function sugerir(){
   const p = D.productos.find(p=>norm(p.nombre)===norm(EN.prod||''));
@@ -406,14 +449,14 @@ P.vencen = () => {
     ['Vencen en 8 a 15 días', 'var(--amarillo)', ls.filter(l=>diasPara(l.venc)>7)]
   ];
   if(!ls.length) return `<div class="vacio"><span class="ic">✅</span><b>Todo en orden</b><br>Ningún producto vence en los próximos 15 días.</div>`;
-  return g.filter(x=>x[2].length).map(([t,c,arr])=>`<div class="sec-t"><span class="dot" style="background:${c}"></span>${t} (${arr.length})</div>` + arr.map(l=>{
+  return '<div class="lista-ancha">' + g.filter(x=>x[2].length).map(([t,c,arr])=>`<div class="sec-t"><span class="dot" style="background:${c}"></span>${t} (${arr.length})</div>` + arr.map(l=>{
     const p = prod(l.p); const dd = diasPara(l.venc);
     const etiqueta = dd<0 ? `<span class="chip rojo">Vencido hace ${-dd} ${-dd===1?'día':'días'} · no se puede vender</span>` : dd===0 ? `<span class="chip naranja">Vence hoy</span>` : `<span class="chip ${dd<=7?'naranja':'amarillo'}">Vence en ${dd} ${dd===1?'día':'días'} (${fCorta(l.venc)})</span>`;
     const boton = dd<0 ? `<button class="btn peq peligro mt8" onclick="pedirBaja('${l.id}')">Dar de baja</button>` :
       (l.adelante ? `<span class="chip verde">✓ Ya está adelante</span>` : `<button class="btn peq sec mt8" onclick="adelante('${l.id}')">Ya lo puse adelante</button>`);
     return `<div class="item"><div class="t">${esc(p.nombre)}</div><div class="d">${l.qty} und · ${pesos(l.qty*p.costo)} en riesgo</div>
     <span class="chip">📍 ${nombreUbic(l.ubic)}</span><br>${etiqueta}<br>${boton}</div>`}).join('')).join('') +
-    `<div class="info mt">Consejo: lo que vence primero va adelante en el estante, para que salga primero.</div>`;
+    `</div><div class="info mt">Consejo: lo que vence primero va adelante en el estante, para que salga primero.</div>`;
 };
 function adelante(id){ D.lotes.find(l=>l.id===id).adelante = true; guardar(); render(); toast('Listo. Ese lote quedó marcado como puesto adelante.'); }
 function pedirBaja(id){
@@ -432,17 +475,17 @@ P.faltantes = () => {
   cabecera('Por pedir','Productos por debajo del mínimo', true);
   const f = D.productos.filter(p=>stock(p.id) < p.min).sort((a,b)=>stock(a.id)-stock(b.id));
   if(!f.length) return `<div class="vacio"><span class="ic">✅</span>Nada por pedir. Todo está por encima del mínimo.</div>`;
-  return f.map(p=>{ const s = stock(p.id); return `<div class="item"><div class="t">${esc(p.nombre)}</div>
-  <div class="d">Hay ${s} · mínimo ${p.min} · sugerido pedir <b>${p.min*2 - s}</b></div>${s===0?'<span class="chip rojo">Agotado</span>':'<span class="chip naranja">Bajo</span>'}</div>`; }).join('');
+  return '<div class="lista-ancha">' + f.map(p=>{ const s = stock(p.id); return `<div class="item"><div class="t">${esc(p.nombre)}</div>
+  <div class="d">Hay ${s} · mínimo ${p.min} · sugerido pedir <b>${p.min*2 - s}</b></div>${s===0?'<span class="chip rojo">Agotado</span>':'<span class="chip naranja">Bajo</span>'}</div>`; }).join('') + '</div>';
 };
 
 /* ---- HU-04 Vender ---- */
 let CARRO = []; let VQ = '';
 P.vender = () => {
   cabecera('Vender','Nueva venta');
-  return `<input id="f-vbuscar" placeholder="Buscar producto para vender" value="${esc(VQ)}" oninput="VQ=this.value;pintarVenta()" autocomplete="off">
-  <div id="vres" class="resultados mt"></div>
-  <div class="card mt" id="carro"></div>`;
+  return `<div class="dos-col"><div><input id="f-vbuscar" placeholder="Buscar producto para vender" value="${esc(VQ)}" oninput="VQ=this.value;pintarVenta()" autocomplete="off">
+  <div id="vres" class="resultados mt"></div></div>
+  <div class="card mt" id="carro"></div></div>`;
 };
 function pintarVenta(){
   const q = norm(VQ.trim()); const r = $('#vres');
@@ -525,7 +568,7 @@ P.caja = () => {
   if(D.cierre) return `<div class="ok" style="margin:0 0 12px">✓ La caja de hoy ya se cerró a las ${D.cierre.h}. Puede consultar el cierre pero no repetirlo.</div>${resumen}
     <div class="card"><div class="lin"><span>Efectivo esperado</span><b>${pesos(D.cierre.esperado)}</b></div><div class="lin"><span>Efectivo contado</span><b>${pesos(D.cierre.contado)}</b></div>
     <div class="lin"><span>Diferencia</span><b class="${D.cierre.dif?'neg':''}">${pesos(D.cierre.dif)}</b></div>${D.cierre.nota?`<div class="mini mt8">Nota: ${esc(D.cierre.nota)}</div>`:''}</div>`;
-  return `${resumen}
+  return `<div class="caja-grid"><div>${resumen}</div><div>
   <div class="card"><div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">Gastos de hoy <button class="btn peq sec" onclick="nuevoGasto()">+ Gasto</button></div>
     ${D.gastos.map(g=>`<div class="lin"><span>${esc(g.d)} <span class="mini">${g.h}</span></span><span>${pesos(g.v)}</span></div>`).join('') || '<div class="mini mt8">Sin gastos.</div>'}</div>
   <div class="card">
@@ -535,7 +578,7 @@ P.caja = () => {
     <input id="f-contado" type="number" inputmode="numeric" placeholder="Cuente billetes y monedas" value="${CJ.contado??''}" oninput="CJ.contado=this.value">
     ${CJ.err?`<div class="err">⚠️ <span>${CJ.err}</span></div>`:''}</div>
   </div>
-  <button class="btn prin" id="b-cerrar" onclick="cerrarCaja(${esperado})">Cerrar caja</button>`;
+  <button class="btn prin" id="b-cerrar" onclick="cerrarCaja(${esperado})">Cerrar caja</button></div></div>`;
 };
 function nuevoGasto(){
   modal(`<h3>Registrar gasto</h3><label for="g-d">¿En qué se gastó?</label><input id="g-d" placeholder="Ej: recibo de luz, bolsas">
@@ -571,7 +614,7 @@ function render(){
   const [r, arg] = (location.hash.slice(1) || 'inicio').split('/');
   const f = P[r] || P.inicio;
   $('#main').innerHTML = f(arg);
-  navegacion(['inicio','vender','buscar','vencen','caja'].includes(r) ? r : (r==='producto'||r==='estante'||r==='mapa'?'buscar':r==='faltantes'?'inicio':'inicio'));
+  navegacion(['inicio','vender','buscar','vencen','caja','entrada','mapa','faltantes'].includes(r) ? r : (r==='producto'?'buscar':r==='estante'?'mapa':'inicio'));
   if(r==='buscar') pintarBusqueda();
   if(r==='vender') pintarVenta();
   window.scrollTo(0,0);
