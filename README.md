@@ -34,6 +34,8 @@ Los datos se guardan en el navegador (localStorage). Al pie de Inicio está **Re
 No necesita servidor ni instalación. Basta con abrir `index.html` en el navegador.
 En el celular se ve como app; en el computador se adapta a una versión de escritorio con menú lateral.
 
+La interfaz incluye un resumen de ventas recientes, avisos del inventario, iconos SVG locales y transiciones suaves entre pantallas. Las animaciones se desactivan automáticamente si el dispositivo tiene activada la opción de reducir movimiento. Las ventanas permiten navegar con Tab y cerrar con Escape. El tema visual funciona sin conexión y no descarga fuentes ni librerías externas.
+
 ## Publicar en Netlify
 
 Opción 1, arrastrando: entrar a https://app.netlify.com/drop y soltar la carpeta del proyecto. Luego en *Site configuration > Change site name* poner `piragua-control`.
@@ -44,6 +46,7 @@ Opción 2, desde GitHub: *Add new site > Import an existing project*, elegir est
 
 ```
 index.html        Prototipo completo (HTML, CSS y JavaScript)
+theme.css         Tema visual adaptable y animaciones accesibles
 manifest.json     Manifiesto de la PWA
 sw.js             Service worker para abrir sin internet
 netlify.toml      Configuración de publicación

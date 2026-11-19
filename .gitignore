@@ -3,3 +3,4 @@ docs/fuentes/out/*.docx
 docs/fuentes/out/*.pdf
 .DS_Store
 Thumbs.db
+tmp/visual-check/
